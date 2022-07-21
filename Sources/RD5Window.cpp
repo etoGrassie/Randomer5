@@ -172,10 +172,10 @@ namespace Window {
     }
 
     void RD5Window::funcClear() {
-        if (this->sender() == btnNamesDel) {
+        if (this->sender() == btnNamesClear) {
             lstNames->clear();
             Names = 0;
-        } else if (this->sender() == btnSubsDel) {
+        } else if (this->sender() == btnSubsClear) {
             lstSubs->clear();
             Subjects = 0;
         }
@@ -185,17 +185,33 @@ namespace Window {
         auto *dialog = new RD5Dlg::dlgRange;
         dialog->setAttribute(Qt::WA_DeleteOnClose, true);
         if (dialog->exec() == 1) {
-            std::cout << "min: " << dialog->spBoxMin->value() << " max: " << dialog->spBoxMax->value() << std::endl;
-            for (int num = dialog->spBoxMin->value(); num <= dialog->spBoxMax->value(); num++) {
+            int rangeMin = dialog->spBoxMin->value();
+            int rangeMax = dialog->spBoxMax->value();
+            for (int num = rangeMin; num <= rangeMax; num++) {
                 lstNames->addItem(QString::number(num));
             }
-        } else {
-            std::cout << "canceled: " << std::endl;
         }
     }
 
     void RD5Window::funcSubsTemps() {
-
+        auto *dialog = new RD5Dlg::dlgTemps;
+        dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+        if (dialog->exec() == 1) {
+            int selection = dialog->currentSelection;
+            QStringList subjects;
+            switch (selection) {
+                case 0:
+                    subjects << "语文" << "数学" << "英语" << "历史" << "生物" << "地理" << "政治";
+                    break;
+                case 1:
+                    subjects << "语文" << "数学" << "英语" << "历史" << "生物" << "物理" << "地理" << "政治";
+                    break;
+                case 2:
+                    subjects << "语文" << "数学" << "英语" << "历史" << "化学" << "物理" << "政治";
+                    break;
+            }
+            lstSubs->addItems(subjects);
+        }
     }
 
     void RD5Window::itemDoubleClicked(QListWidgetItem *item) {

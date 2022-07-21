@@ -11,9 +11,13 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QDialogButtonBox>
+#include <QListWidget>
 
 namespace RD5Dlg {
     class dlgRange : public QDialog {
+
+    Q_OBJECT
+
     public:
         dlgRange();
 
@@ -33,6 +37,37 @@ namespace RD5Dlg {
         void setupUi();
 
         void setupEvent();
+    };
+
+    class dlgTemps : public QDialog {
+
+    Q_OBJECT
+
+    public:
+        dlgTemps();
+
+    public:
+        int currentSelection;
+
+    public:
+        QVBoxLayout *vlCentral;
+        QHBoxLayout *hlTempsMenu;
+        QVBoxLayout *vlMenu;
+        QLabel *lbMenu;
+        QListWidget *lstMenu;
+        QLabel *lbLabel;
+        QDialogButtonBox *btnBox;
+        QLabel *lbDesc;
+
+    private:
+        void setupUi();
+
+        void setupEvent();
+
+    private slots:
+
+        void detectItemSelection();
+
     };
 }
 
