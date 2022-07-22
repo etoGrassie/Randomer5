@@ -14,6 +14,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QSpinBox>
 
 namespace Window {
     class RD5Window : public QMainWindow {
@@ -23,12 +24,15 @@ namespace Window {
     public: // Public Functions
         RD5Window();
 
+        static int randomNumber(int min, int max);
+
     private: // Private Pointers
 
         QWidget *widCentral;
         QVBoxLayout *vlCentral;
         QHBoxLayout *hlLists;
         QHBoxLayout *hlOptions;
+        QHBoxLayout *hlRandomTimes;
         QGridLayout *glNames;
         QGridLayout *glSubs;
         QVBoxLayout *vlNames;
@@ -41,12 +45,15 @@ namespace Window {
         QPushButton *btnSubsDel;
         QPushButton *btnSubsTemps;
         QPushButton *btnSubsClear;
+        QPushButton *btnDebug;
         QListWidget *lstNames;
         QListWidget *lstSubs;
         QCommandLinkButton *cmdBtnStart;
         QCheckBox *chkBtnProtected;
         QLabel *lbNames;
         QLabel *lbSubs;
+        QLabel *lbTimes;
+        QSpinBox *spBoxRandomTimes;
 
     private: // Private Functions
 
@@ -80,7 +87,11 @@ namespace Window {
 
         void funcSubsTemps();
 
+        void funcRandom();
+
         void itemDoubleClicked(QListWidgetItem *item);
+
+        void debug();
 
     };
 }

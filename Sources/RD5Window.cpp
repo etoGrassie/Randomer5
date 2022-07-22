@@ -5,6 +5,7 @@
 #include <iostream>
 #include <QInputDialog>
 #include <QDebug>
+// #include <string>
 #include "../Headers/RD5Window.h"
 #include "../Headers/RD5Dialog.h"
 
@@ -57,11 +58,20 @@ namespace Window {
         hlLists->addLayout(vlNames);
         hlLists->addLayout(vlSubs);
 
+        lbTimes = new QLabel;
+        spBoxRandomTimes = new QSpinBox;
+        hlRandomTimes = new QHBoxLayout;
+        hlRandomTimes->addWidget(lbTimes);
+        hlRandomTimes->addWidget(spBoxRandomTimes);
+
         cmdBtnStart = new QCommandLinkButton;
         chkBtnProtected = new QCheckBox;
+        btnDebug = new QPushButton;
         hlOptions = new QHBoxLayout;
         hlOptions->addWidget(cmdBtnStart);
+        hlOptions->addLayout(hlRandomTimes);
         hlOptions->addWidget(chkBtnProtected);
+        hlOptions->addWidget(btnDebug);
 
         widCentral = new QWidget;
         vlCentral = new QVBoxLayout;
@@ -75,6 +85,8 @@ namespace Window {
         lstSubs->setSelectionMode(QAbstractItemView::ExtendedSelection);
         lstNames->setEditTriggers(QListWidget::DoubleClicked);
         lstSubs->setEditTriggers(QListWidget::DoubleClicked);
+
+        spBoxRandomTimes->setMinimum(1);
 
         // Text
         lbNames->setText("号数列表");
@@ -91,7 +103,9 @@ namespace Window {
         btnSubsClear->setText("清空");
 
         cmdBtnStart->setText("开始抽取");
+        lbTimes->setText("抽取次数：");
         chkBtnProtected->setText("启用保护模式");
+        btnDebug->setText("Debug");
     }
 
     void RD5Window::closeEvent(QCloseEvent *event) {
@@ -136,6 +150,7 @@ namespace Window {
                 SLOT(itemDoubleClicked(QListWidgetItem * )));
         connect(lstSubs, SIGNAL(itemDoubleClicked(QListWidgetItem * )), this,
                 SLOT(itemDoubleClicked(QListWidgetItem * )));
+        connect(btnDebug, SIGNAL(clicked(bool)), this, SLOT(funcRandom()));
     }
 
     void RD5Window::protectModeEvent() {
@@ -189,6 +204,7 @@ namespace Window {
             int rangeMax = dialog->spBoxMax->value();
             for (int num = rangeMin; num <= rangeMax; num++) {
                 lstNames->addItem(QString::number(num));
+                Names++;
             }
         }
     }
@@ -216,5 +232,21 @@ namespace Window {
 
     void RD5Window::itemDoubleClicked(QListWidgetItem *item) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+    }
+
+    int RD5Window::randomNumber(int min, int max) {
+        srand((int)time(0));
+        return 1 + rand() % (54);
+    }
+
+    void RD5Window::funcRandom() {
+        std::cout << "Names has " << Names << " objects. " << std::endl;
+        int randSource[Names];
+        int randResult[10];
+
+    }
+
+    void RD5Window::debug() {
+        std::cout << Names << std::endl;
     }
 }
