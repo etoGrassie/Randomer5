@@ -5,9 +5,10 @@
 #include <iostream>
 #include <QInputDialog>
 #include <QDebug>
-// #include <string>
 #include "../Headers/RD5Window.h"
-#include "../Headers/RD5Dialog.h"
+#include <cstdlib>
+#include <ctime>
+// #include "../Headers/RD5Dialog.h"
 
 
 namespace Window {
@@ -16,9 +17,19 @@ namespace Window {
         setupEvents();
     }
 
+    bool RD5Window::isIn(int number, const int *array) {
+        std::cout << "the length of array is " << sizeof(array) / sizeof(int) << std::endl;
+        for (int time = 0; time < sizeof(array) / sizeof(int); time++) {
+            if (number == array[time]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void RD5Window::setupUi() {
         this->resize(600, 800);
-        this->setWindowTitle("Randomer 4");
+        this->setWindowTitle("Randomer 5");
 
         vlNames = new QVBoxLayout;
         lbNames = new QLabel();
@@ -197,13 +208,9 @@ namespace Window {
     }
 
     void RD5Window::funcNamesRange() {
-        auto *dialog = new RD5Dlg::dlgRange;
-        dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-        if (dialog->exec() == 1) {
-            int rangeMin = dialog->spBoxMin->value();
-            int rangeMax = dialog->spBoxMax->value();
-            for (int num = rangeMin; num <= rangeMax; num++) {
-                lstNames->addItem(QString::number(num));
+        if (dlgRange.exec() == QDialog::Accepted) {
+            for (int times = dlgRange.spBoxMin->value(); times <= dlgRange.spBoxMax->value(); times++) {
+                lstNames->addItem(QString::number(times));
                 Names++;
             }
         }
@@ -234,19 +241,24 @@ namespace Window {
         item->setFlags(item->flags() | Qt::ItemIsEnabled | Qt::ItemIsEditable);
     }
 
-    int RD5Window::randomNumber(int min, int max) {
-        srand((int)time(0));
-        return 1 + rand() % (54);
-    }
-
     void RD5Window::funcRandom() {
-        std::cout << "Names has " << Names << " objects. " << std::endl;
-        int randSource[Names];
-        int randResult[10];
+        if (Names < 1) {
+            return;
+        }
+        srand(unsigned(time(nullptr)));
+        int randomResult[spBoxRandomTimes->value()];
+        for (int time = 0; time < spBoxRandomTimes->value(); time++) {
+            int randNum = rand() % Names;
+            if (isIn(randNum, randomResult)) {
+                time--;
+            }
+            else {
+                randomResult[time] = randNum;
+            }
+        }
 
-    }
-
-    void RD5Window::debug() {
-        std::cout << Names << std::endl;
+        for (int time = 0; time < spBoxRandomTimes->value(); time++) {
+            std::cout << randomResult[time] << std::endl;
+        }
     }
 }

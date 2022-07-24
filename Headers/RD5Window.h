@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QSpinBox>
+#include "RD5Dialog.h"
 
 namespace Window {
     class RD5Window : public QMainWindow {
@@ -24,7 +25,7 @@ namespace Window {
     public: // Public Functions
         RD5Window();
 
-        static int randomNumber(int min, int max);
+    static bool isIn(int number, const int *array);
 
     private: // Private Pointers
 
@@ -73,6 +74,8 @@ namespace Window {
 
         int Subjects = 0;
 
+        RD5Dlg::dlgRange dlgRange;
+
     private slots:
 
         void protectModeEvent();
@@ -90,8 +93,6 @@ namespace Window {
         void funcRandom();
 
         void itemDoubleClicked(QListWidgetItem *item);
-
-        void debug();
 
     };
 }
