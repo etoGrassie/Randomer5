@@ -1,9 +1,4 @@
-//
-// Created by Grassie on 2022/7/21.
-//
-
 #include "../Headers/RD5Dialog.h"
-#include <iostream>
 
 namespace RD5Dlg {
     // Dialog Range
@@ -147,5 +142,58 @@ namespace RD5Dlg {
                 break;
         }
         currentSelection = selection;
+    }
+
+
+    // Dialog Random Result
+    dlgRandomResult::dlgRandomResult(bool protected_)
+            : protected_(protected_) {
+        setupUi();
+        setupEvent();
+    }
+
+    void dlgRandomResult::setupUi() {
+        this->resize(400, 600);
+
+        vlCentral = new QVBoxLayout;
+        lbLabel = new QLabel;
+        txtBrowResult = new QTextBrowser;
+        btnBox = new QDialogButtonBox;
+        btnBox->setStandardButtons(QDialogButtonBox::Save | QDialogButtonBox::Close);
+
+        vlCentral->addWidget(lbLabel);
+        vlCentral->addWidget(txtBrowResult);
+        vlCentral->addWidget(btnBox);
+        this->setLayout(vlCentral);
+
+        // Policy
+        this->setWindowFlags(Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint);
+
+        // Text
+        this->setWindowTitle(QString(protected_ ? "抽取结果" : "抽取结果 (保护模式开启)"));
+        lbLabel->setText("抽取结果");
+
+    }
+
+    void dlgRandomResult::setupEvent() {
+        connect(btnBox, SIGNAL(accepted()), this, SLOT(saveResult()));
+        connect(btnBox, SIGNAL(rejected()), this, SLOT(reject()));
+    }
+
+    void dlgRandomResult::saveResult() {
+        QString fileName = QFileDialog::getSaveFileName(this, "保存抽号记录",
+                                                        "./", "文本文件 (*.txt)");
+        if (fileName.isEmpty()) {
+            return;
+        }
+        QFile file(fileName);
+        if (!file.open(QIODevice::Append | QIODevice::Text)) {
+            QMessageBox::warning(this, "保存文件", "无法保存文件！\n可能是权限问题，请以管理员身份尝试运行。");
+            return;
+        }
+        QTextStream out(&file);
+        out << "=======start========\n" + txtBrowResult->toPlainText() + "\n========end=========\n";
+        file.close();
+        this->accept();
     }
 }

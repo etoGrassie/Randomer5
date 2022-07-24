@@ -12,6 +12,12 @@
 #include <QSpinBox>
 #include <QDialogButtonBox>
 #include <QListWidget>
+#include <QTextBrowser>
+#include <QString>
+#include <QFileDialog>
+#include <QFile>
+#include <QMessageBox>
+#include <QTextStream>
 
 namespace RD5Dlg {
     class dlgRange : public QDialog {
@@ -68,6 +74,34 @@ namespace RD5Dlg {
 
         void detectItemSelection();
 
+    };
+
+    class dlgRandomResult : public QDialog {
+
+    Q_OBJECT
+
+    public:
+        dlgRandomResult(bool protected_);
+
+    public:
+        QTextBrowser *txtBrowResult;
+
+    private:
+        QVBoxLayout *vlCentral;
+        QLabel *lbLabel;
+        QDialogButtonBox *btnBox;
+
+    private:
+        void setupUi();
+
+        void setupEvent();
+
+    private slots:
+
+        void saveResult();
+
+    private:
+        bool protected_;
     };
 }
 

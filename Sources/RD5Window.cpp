@@ -1,15 +1,8 @@
-//
-// Created by Grassie on 2022/7/20.
-//
-
-#include <iostream>
 #include <QInputDialog>
-#include <QDebug>
-#include "../Headers/RD5Window.h"
+#include <QDateTime>
 #include <cstdlib>
 #include <ctime>
-// #include "../Headers/RD5Dialog.h"
-
+#include "../Headers/RD5Window.h"
 
 namespace Window {
     RD5Window::RD5Window() {
@@ -17,9 +10,8 @@ namespace Window {
         setupEvents();
     }
 
-    bool RD5Window::isIn(int number, const int *array) {
-        std::cout << "the length of array is " << sizeof(array) / sizeof(int) << std::endl;
-        for (int time = 0; time < sizeof(array) / sizeof(int); time++) {
+    bool RD5Window::isIn(int number, const int *array, int size) {
+        for (int time = 0; time < size; time++) {
             if (number == array[time]) {
                 return true;
             }
@@ -225,12 +217,15 @@ namespace Window {
             switch (selection) {
                 case 0:
                     subjects << "语文" << "数学" << "英语" << "历史" << "生物" << "地理" << "政治";
+                    Subjects += 7;
                     break;
                 case 1:
                     subjects << "语文" << "数学" << "英语" << "历史" << "生物" << "物理" << "地理" << "政治";
+                    Subjects += 8;
                     break;
                 case 2:
                     subjects << "语文" << "数学" << "英语" << "历史" << "化学" << "物理" << "政治";
+                    Subjects += 7;
                     break;
             }
             lstSubs->addItems(subjects);
@@ -242,23 +237,68 @@ namespace Window {
     }
 
     void RD5Window::funcRandom() {
+        int randomTimes = spBoxRandomTimes->value();
+        // 检测抽取基本条件，如果满足下列条件之一，则无法抽取
+        // 1) 号数为0（没有结果）
+        // 2) 号数小于抽取次数（必定会有重复）
         if (Names < 1) {
+            QMessageBox::critical(this, "无法抽取", "没有号数可以抽取！",
+                                  QMessageBox::Cancel);
+            return;
+        } else if (Names < randomTimes) {
+            QMessageBox::critical(this, "无法抽取", "号数少于抽取次数！（必定会重复）",
+                                  QMessageBox::Cancel);
             return;
         }
+
         srand(unsigned(time(nullptr)));
-        int randomResult[spBoxRandomTimes->value()];
-        for (int time = 0; time < spBoxRandomTimes->value(); time++) {
+        // 随机座号，不重复
+        // 即 每次抽取都检测是否有抽过的（是否在已抽数字列表中，isIn(int num, int *array, int size)）
+        // 是则重抽，否则添加到已抽数字列表
+        int randomNames[randomTimes];
+        for (int times = 0; times < randomTimes; times++) {
             int randNum = rand() % Names;
-            if (isIn(randNum, randomResult)) {
-                time--;
+            if (isIn(randNum, randomNames, randomTimes)) {
+                times--;
+                continue;
             }
-            else {
-                randomResult[time] = randNum;
-            }
+            randomNames[times] = randNum;
         }
 
-        for (int time = 0; time < spBoxRandomTimes->value(); time++) {
-            std::cout << randomResult[time] << std::endl;
+        // 抽取科目，可能重复
+        // 科目可以为空，为空则不抽取科目
+        int randomSubs[randomTimes];
+        if (Subjects > 0) {
+            for (int times = 0; times < randomTimes; times++) {
+                int randSub = rand() % Subjects;
+                randomSubs[times] = randSub;
+            }
+        } else {
+            for (int times = 0; times < randomTimes; times++) {
+                randomSubs[times] = 0;
+            }
+        }
+        // 获取当前时间和日期并保存到QString当中
+        QString currenTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+
+        RD5Dlg::dlgRandomResult dlgResult(protected_);
+
+        /* 输出格式为Markdown
+         * 首行是 "{randomTimes}/{Names} 抽取结果"
+         * 第二行是 "时间: {currentTime}"
+         * 接下来是抽取结果，格式为 "{列表项目文字} --> {科目}"
+         */
+
+        dlgResult.txtBrowResult->setMarkdown(
+                QString("# %1/%2 抽取结果\n").arg(randomTimes).arg(Names) +
+                QString("#### 时间: %1\n").arg(currenTime)
+        );
+        for (int times = 0; times < randomTimes; times++) {
+            dlgResult.txtBrowResult->setMarkdown(
+                    dlgResult.txtBrowResult->toMarkdown() +
+                    QString("### %1 %2\n\n").arg(lstNames->item(randomNames[times])->text()).arg(
+                            Subjects > 1 ? "--> " + lstSubs->item(randomSubs[times])->text() : "")
+            );
         }
     }
 }

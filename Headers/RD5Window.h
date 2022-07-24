@@ -25,7 +25,7 @@ namespace Window {
     public: // Public Functions
         RD5Window();
 
-    static bool isIn(int number, const int *array);
+    static bool isIn(int number, const int *array, int size);
 
     private: // Private Pointers
 
