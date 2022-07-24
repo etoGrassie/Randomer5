@@ -1,5 +1,3 @@
-#include <QInputDialog>
-#include <QDateTime>
 #include <cstdlib>
 #include <ctime>
 #include "../Headers/RD5Window.h"
@@ -22,6 +20,8 @@ namespace Window {
     void RD5Window::setupUi() {
         this->resize(600, 800);
         this->setWindowTitle("Randomer 5");
+
+        QFont defaultFont("Microsoft YaHei");
 
         vlNames = new QVBoxLayout;
         lbNames = new QLabel();
@@ -69,12 +69,12 @@ namespace Window {
 
         cmdBtnStart = new QCommandLinkButton;
         chkBtnProtected = new QCheckBox;
-        btnDebug = new QPushButton;
+        // btnDebug = new QPushButton;
         hlOptions = new QHBoxLayout;
         hlOptions->addWidget(cmdBtnStart);
         hlOptions->addLayout(hlRandomTimes);
         hlOptions->addWidget(chkBtnProtected);
-        hlOptions->addWidget(btnDebug);
+        // hlOptions->addWidget(btnDebug);
 
         widCentral = new QWidget;
         vlCentral = new QVBoxLayout;
@@ -108,7 +108,23 @@ namespace Window {
         cmdBtnStart->setText("开始抽取");
         lbTimes->setText("抽取次数：");
         chkBtnProtected->setText("启用保护模式");
-        btnDebug->setText("Debug");
+        // btnDebug->setText("Debug");
+
+        // Text Font
+        lbNames->setFont(defaultFont);
+        lbSubs->setFont(defaultFont);
+        btnNamesAdd->setFont(defaultFont);
+        btnNamesDel->setFont(defaultFont);
+        btnNamesRange->setFont(defaultFont);
+        btnNamesClear->setFont(defaultFont);
+        btnSubsAdd->setFont(defaultFont);
+        btnSubsDel->setFont(defaultFont);
+        btnSubsTemps->setFont(defaultFont);
+        btnSubsClear->setFont(defaultFont);
+        cmdBtnStart->setFont(defaultFont);
+        lbTimes->setFont(defaultFont);
+        chkBtnProtected->setFont(defaultFont);
+        // btnDebug->setFont(defaultFont);
     }
 
     void RD5Window::closeEvent(QCloseEvent *event) {
@@ -153,7 +169,7 @@ namespace Window {
                 SLOT(itemDoubleClicked(QListWidgetItem * )));
         connect(lstSubs, SIGNAL(itemDoubleClicked(QListWidgetItem * )), this,
                 SLOT(itemDoubleClicked(QListWidgetItem * )));
-        connect(btnDebug, SIGNAL(clicked(bool)), this, SLOT(funcRandom()));
+        connect(cmdBtnStart, SIGNAL(clicked(bool)), this, SLOT(funcRandom()));
     }
 
     void RD5Window::protectModeEvent() {
@@ -250,19 +266,22 @@ namespace Window {
                                   QMessageBox::Cancel);
             return;
         }
-
         srand(unsigned(time(nullptr)));
         // 随机座号，不重复
         // 即 每次抽取都检测是否有抽过的（是否在已抽数字列表中，isIn(int num, int *array, int size)）
         // 是则重抽，否则添加到已抽数字列表
         int randomNames[randomTimes];
-        for (int times = 0; times < randomTimes; times++) {
-            int randNum = rand() % Names;
-            if (isIn(randNum, randomNames, randomTimes)) {
-                times--;
-                continue;
+        if (Names == 1) {
+            randomNames[0] = 0;
+        } else {
+            for (int times = 0; times < randomTimes; times++) {
+                int randNum = rand() % Names;
+                if (isIn(randNum, randomNames, randomTimes)) {
+                    times--;
+                    continue;
+                }
+                randomNames[times] = randNum;
             }
-            randomNames[times] = randNum;
         }
 
         // 抽取科目，可能重复
@@ -278,6 +297,7 @@ namespace Window {
                 randomSubs[times] = 0;
             }
         }
+
         // 获取当前时间和日期并保存到QString当中
         QString currenTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 
@@ -290,7 +310,7 @@ namespace Window {
          */
 
         dlgResult.txtBrowResult->setMarkdown(
-                QString("# %1/%2 抽取结果\n").arg(randomTimes).arg(Names) +
+                QString("## %1/%2 抽取结果\n").arg(randomTimes).arg(Names) +
                 QString("#### 时间: %1\n").arg(currenTime)
         );
         for (int times = 0; times < randomTimes; times++) {
@@ -300,5 +320,6 @@ namespace Window {
                             Subjects > 1 ? "--> " + lstSubs->item(randomSubs[times])->text() : "")
             );
         }
+        dlgResult.exec();
     }
 }

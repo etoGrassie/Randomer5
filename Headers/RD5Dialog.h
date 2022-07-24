@@ -16,6 +16,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QFile>
+#include <QFont>
 #include <QMessageBox>
 #include <QTextStream>
 

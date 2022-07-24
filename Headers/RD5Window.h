@@ -1,7 +1,3 @@
-//
-// Created by Grassie on 2022/7/20.
-//
-
 #ifndef RD5_RD5WINDOW_H
 #define RD5_RD5WINDOW_H
 
@@ -15,6 +11,9 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QSpinBox>
+#include <QInputDialog>
+#include <QDateTime>
+#include <QFont>
 #include "RD5Dialog.h"
 
 namespace Window {
@@ -25,7 +24,7 @@ namespace Window {
     public: // Public Functions
         RD5Window();
 
-    static bool isIn(int number, const int *array, int size);
+        static bool isIn(int number, const int *array, int size);
 
     private: // Private Pointers
 
@@ -46,7 +45,7 @@ namespace Window {
         QPushButton *btnSubsDel;
         QPushButton *btnSubsTemps;
         QPushButton *btnSubsClear;
-        QPushButton *btnDebug;
+        // QPushButton *btnDebug;
         QListWidget *lstNames;
         QListWidget *lstSubs;
         QCommandLinkButton *cmdBtnStart;

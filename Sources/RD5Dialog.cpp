@@ -11,6 +11,8 @@ namespace RD5Dlg {
         this->resize(300, 200);
         lbLabel = new QLabel;
 
+        QFont defaultFont("Microsoft YaHei");
+
         hlMin = new QHBoxLayout;
         lbMin = new QLabel;
         spBoxMin = new QSpinBox;
@@ -42,6 +44,13 @@ namespace RD5Dlg {
         lbMin->setText("最小值");
         lbMax->setText("最大值");
 
+        // Text Font
+        lbLabel->setFont(defaultFont);
+        lbMin->setFont(defaultFont);
+        lbMax->setFont(defaultFont);
+        spBoxMin->setFont(defaultFont);
+        spBoxMax->setFont(defaultFont);
+        btnBox->setFont(defaultFont);
     }
 
     void dlgRange::setupEvent() {
@@ -58,6 +67,8 @@ namespace RD5Dlg {
     }
 
     void dlgTemps::setupUi() {
+        QFont defaultFont("Microsoft YaHei");
+
         lbLabel = new QLabel;
         lbMenu = new QLabel;
         lstMenu = new QListWidget;
@@ -94,6 +105,12 @@ namespace RD5Dlg {
         this->setWindowTitle("学科模板");
         lbMenu->setText("年级");
         lbLabel->setText("学科模板");
+
+        // Text Font
+        lbMenu->setFont(defaultFont);
+        lbLabel->setFont(defaultFont);
+        lbDesc->setFont(defaultFont);
+        btnBox->setFont(defaultFont);
     }
 
     void dlgTemps::setupEvent() {
@@ -155,6 +172,8 @@ namespace RD5Dlg {
     void dlgRandomResult::setupUi() {
         this->resize(400, 600);
 
+        QFont defaultFont("Microsoft YaHei");
+
         vlCentral = new QVBoxLayout;
         lbLabel = new QLabel;
         txtBrowResult = new QTextBrowser;
@@ -172,6 +191,10 @@ namespace RD5Dlg {
         // Text
         this->setWindowTitle(QString(protected_ ? "抽取结果" : "抽取结果 (保护模式开启)"));
         lbLabel->setText("抽取结果");
+
+        // Text Font
+        lbLabel->setFont(defaultFont);
+        txtBrowResult->setFont(defaultFont);
 
     }
 
